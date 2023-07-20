@@ -7,6 +7,7 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from sklearn.model_selection import train_test_split
 from tensorflow.keras import layers
+from tensorflow.keras.callbacks import ModelCheckpoint
 
 # Define the CNN model
 def create_model():
@@ -68,8 +69,12 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
+# Define a checkpoint to save the best model
+checkpoint_path = 'best_model.h5'
+checkpoint = ModelCheckpoint(checkpoint_path, monitor='val_accuracy', save_best_only=True, mode='max', verbose=1)
+
 # Train the model
-history = model.fit(X_train, y_train, epochs=100, validation_data=(X_val, y_val))
+history = model.fit(X_train, y_train, epochs=100, validation_data=(X_val, y_val), callbacks=[checkpoint])
 
 # Save the model and necessary files for standalone testing
 model.save('rotation_model.h5')  # Save the trained model
