@@ -42,7 +42,7 @@ def pdf_to_image(pdf_file: str) -> str:
             if not os.path.exists("./images/"+folder):
                 os.makedirs("./images/"+folder)
             image_name = os.path.basename(pdf_file).replace('.pdf','').replace('.PDF','')+f"_page{page.number+1}"+".jpg"
-            pix.save("./images/"+folder+"/"+os.path.basename(pdf_file).replace('.pdf','').replace('.PDF','')+".jpg")
+            pix.save("./images/"+folder+"/"+os.path.basename(pdf_file).replace('.pdf','').replace('.PDF','')+f"_page{page.number+1}"+".jpg")
     except:
         pass
 
@@ -57,17 +57,17 @@ if not os.path.exists("./images"):
 
 for pdf_file in pdf_folder:
     if pdf_file.endswith('.pdf') or pdf_file.endswith('.PDF'):
-        print("\npdf_file::: ",pdf_file)
+        # print("\npdf_file::: ",pdf_file)
         pdf_to_image(pdf_file)
         
     
     elif pdf_file.endswith('.tif') or pdf_file.endswith('.tiff'):
-        print("\npdf_file::: ",pdf_file)
+        # print("\npdf_file::: ",pdf_file)
         converted_pdf = tiff_to_pdf(pdf_file)
         pdf_to_image(converted_pdf)
 
     elif pdf_file.endswith('jpg') or pdf_file.endswith('.png') or pdf_file.endswith('jpeg'):
-        print("\npdf_file::: ",pdf_file)
+        # print("\npdf_file::: ",pdf_file)
         folder_name = os.path.basename(pdf_file).replace('.jpg','').replace('.png','').replace('jpeg','')
         if not os.path.exists('./images/'+folder_name):
             os.makedirs('./images/'+folder_name)

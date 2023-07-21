@@ -1,9 +1,12 @@
 import os
 import json
 import numpy as np
+from PIL import Image
+Image.MAX_IMAGE_PIXELS=None
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.callbacks import ModelCheckpoint
 
 # Set the path to your images folder and annotations JSON file
 images_folder = 'path/to/images/folder'
@@ -53,8 +56,17 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
+# Define a checkpoint to save the best model
+checkpoint_path = 'best_model.h5'
+checkpoint = ModelCheckpoint(checkpoint_path, monitor='val_accuracy', save_best_only=True, mode='max', verbose=1)
+
 # Continue training the model
-history = model.fit(X_train, y_train, epochs=200, validation_data=(X_val, y_val))
+history = model.fit(X_train, y_train, epochs=200, validation_data=(X_val, y_val), callbacks=[checkpoint])
 
 # Save the retrained model
 model.save('retrained_rotation_model.h5')
+
+# Evaluate the model on the testing set
+test_loss, test_acc = model.evaluate(X_test, y_test)
+print('Test Loss:', test_loss)
+print('Test Accuracy:', test_acc)
